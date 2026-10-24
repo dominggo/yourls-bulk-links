@@ -46,6 +46,13 @@ function bulklinks_toolbar( $start ) {
 // JS: only on the main list page (html_head fires on every admin page with a $context)
 yourls_add_action( 'html_head', 'bulklinks_js' );
 function bulklinks_js( $context ) {
+    // yourls_do_action('html_head', $context) wraps a lone scalar $arg into a one-element
+    // array before dispatch (see yourls_do_action()/yourls_apply_filter() in
+    // includes/functions-plugins.php), so an action callback with the default
+    // accepted_args=1 receives [$context], not $context itself. Unwrap defensively.
+    if( is_array( $context ) ) {
+        $context = isset( $context[0] ) ? $context[0] : '';
+    }
     if( $context !== 'index' ) {
         return;
     }
